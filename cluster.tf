@@ -47,7 +47,7 @@ resource "google_compute_firewall" "firewall" {
     ports    = ["22"]
   }
 
-  source_tags = ["foo"]
+  target_tags = ["foo"]
 }
 
 resource "google_compute_firewall" "firewall1" {
@@ -64,7 +64,7 @@ resource "google_compute_firewall" "firewall1" {
     ports    = ["22"]
   }
 
-  source_tags = ["too"]
+  target_tags = ["too"]
 }
 
 resource "google_compute_instance" "instance" {
@@ -106,11 +106,23 @@ resource "google_container_cluster" "primary" {
 
   subnetwork = "${google_compute_subnetwork.subnet2.name}"
 
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "10.0.0.0/16"
+      display_name = "net1"
+    }
+  }
+
   // subnetwork = "subnet-nods"
 
   ip_allocation_policy {
     cluster_secondary_range_name  = "range-pods"
     services_secondary_range_name = "range-services"
+  }
+  private_cluster_config {
+    enable_private_endpoint = true
+    enable_private_nodes    = true
+    master_ipv4_cidr_block  = "192.168.128.0/28"
   }
 }
 
