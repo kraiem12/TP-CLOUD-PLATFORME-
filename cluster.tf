@@ -44,7 +44,7 @@ resource "google_compute_firewall" "firewall" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22", "8080"]
   }
 
   target_tags = ["foo"]
